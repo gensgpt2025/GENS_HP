@@ -29,5 +29,22 @@
         </div>
     </div>
 
+    <script>
+        const targets = document.querySelectorAll('.card, .profile-card, h1, p, .caption');
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('fade-in');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        targets.forEach(target => {
+            observer.observe(target);
+        });
+    </script>
+
 </body>
 </html>
