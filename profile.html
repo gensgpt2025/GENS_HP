@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ちゃとら Atelie GENS - プロフィール</title>
+    <title>ちゃとら Atelie GENS - profile</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,21 +11,23 @@
     <nav class="navbar">
         <div class="logo">ちゃとら Atelie GENS</div>
         <ul>
-            <li><a href="index.html">ホーム</a></li>
-            <li><a href="profile.html">プロフィール</a></li>
-            <li><a href="works.html">作品紹介</a></li>
+            <li><a href="index.html">home</a></li>
+            <li><a href="profile.html">profile</a></li>
+            <li><a href="works.html">gallery</a></li>
             <li><a href="sns.html">SNS</a></li>
-            <li><a href="shop.html">販売サイト</a></li>
+            <li><a href="shop.html">shop</a></li>
         </ul>
     </nav>
 
     <div class="container">
-        <h2>プロフィール</h2>
+        <h2>profile</h2>
         <div class="profile-card">
             <p>ここに作家やアトリエの自己紹介文を記述します。どのような作品を作っているのか、どのような想いで活動しているのかなどを自由に書いてください。</p>
             <p>看板猫の「げん」は、毎日の制作活動に癒やしとインスピレーションを与えてくれる大切な存在です。</p>
         </div>
     </div>
+
+    <div id="paw-container"></div>
 
     <script>
         const targets = document.querySelectorAll('.card, .profile-card, h1, p, .caption');
@@ -42,6 +44,77 @@
         targets.forEach(target => {
             observer.observe(target);
         });
+
+        // Cat paw animation
+        const pawContainer = document.getElementById('paw-container');
+        const pawImageSrc = 'gazou/cat_paw.png';
+        const numPaws = 10; // Number of paw prints to display
+        const animationDuration = 5000; // milliseconds
+
+        const excludedElements = document.querySelectorAll('img:not(.cat-paw), h1, h2, p, .caption');
+
+        function isOverlapping(x, y, width, height, rects) {
+            for (const rect of rects) {
+                if (x < rect.right && x + width > rect.left &&
+                    y < rect.bottom && y + height > rect.top) {
+                    return true; // Overlapping
+                }
+            }
+            return false; // Not overlapping
+        }
+
+        function createPaw() {
+            const paw = document.createElement('img');
+            paw.src = pawImageSrc;
+            paw.classList.add('cat-paw');
+            pawContainer.appendChild(paw);
+
+            const pawWidth = 50; // Defined in CSS, match here
+            const pawHeight = 50; // Defined in CSS, match here
+
+            let startX, startY;
+            let attempts = 0;
+            const maxAttempts = 100; // Prevent infinite loops
+
+            const excludedElementsRects = Array.from(excludedElements).map(el => el.getBoundingClientRect());
+
+            do {
+                startX = Math.random() * (window.innerWidth - pawWidth);
+                startY = Math.random() * (window.innerHeight - pawHeight);
+                attempts++;
+            } while (isOverlapping(startX, startY, pawWidth, pawHeight, excludedElementsRects) && attempts < maxAttempts);
+
+            if (attempts >= maxAttempts) {
+                paw.remove(); // If too many attempts, don't create paw
+                return;
+            }
+
+            const endX = Math.random() * (window.innerWidth - pawWidth);
+            const endY = Math.random() * (window.innerHeight - pawHeight);
+            const rotation = Math.random() * 360;
+
+            paw.style.left = `${startX}px`;
+            paw.style.top = `${startY}px`;
+            paw.style.transform = `rotate(${rotation}deg) scale(0)`;
+            paw.style.opacity = 0;
+
+            // Animate paw
+            paw.animate([
+                { transform: `rotate(${rotation}deg) scale(0)`, opacity: 0 },
+                { transform: `rotate(${rotation}deg) scale(1)`, opacity: 1, offset: 0.1 },
+                { transform: `rotate(${rotation}deg) scale(1)`, opacity: 1, offset: 0.9 },
+                { transform: `rotate(${rotation}deg) scale(0)`, opacity: 0 }
+            ], {
+                duration: animationDuration,
+                easing: 'ease-in-out',
+                fill: 'forwards'
+            }).onfinish = () => {
+                paw.remove();
+            };
+        }
+
+        // Create paws at intervals
+        setInterval(createPaw, animationDuration / numPaws);
     </script>
 
 </body>
