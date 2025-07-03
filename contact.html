@@ -49,7 +49,7 @@
 
         // Cat paw animation
         const pawContainer = document.getElementById('paw-container');
-        const pawImageSrc = 'gazou/cat_paw.png';
+        const pawImageSrcs = ['gazou/cat_paw.png', 'gazou/cat_paw3.png', 'gazou/cat_paw4.png', 'gazou/cat_paw5.png'];
         const numPaws = 10; // Number of paw prints to display
         const animationDuration = 5000; // milliseconds
 
@@ -67,7 +67,7 @@
 
         function createPaw() {
             const paw = document.createElement('img');
-            paw.src = pawImageSrc;
+            paw.src = pawImageSrcs[Math.floor(Math.random() * pawImageSrcs.length)];
             paw.classList.add('cat-paw');
             pawContainer.appendChild(paw);
 
@@ -119,5 +119,8 @@
         setInterval(createPaw, animationDuration / numPaws);
     </script>
 
+    <footer>
+        <p>&copy; 2025 craft works GENS</p>
+    </footer>
 </body>
 </html>
